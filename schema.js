@@ -1,9 +1,8 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const commentSchema = new mongoose.Schema({
+const commentSchema = new Schema({
   username: {
     type: String,
-    required: true,
   },
   message: {
     type: String,
@@ -15,11 +14,10 @@ const commentSchema = new mongoose.Schema({
   },
 });
 
-const blogPostSchema = new mongoose.Schema(
+const blogSchema = new Schema(
   {
     title: {
       type: String,
-      required: true,
       unique: true,
       minlength: 5,
     },
@@ -28,38 +26,30 @@ const blogPostSchema = new mongoose.Schema(
       required: true,
       minlength: 50,
     },
-    author: {
-      type: String,
-      required: true,
-    },
-    tags: {
-      type: [String],
-      default: [],
-    },
     category: {
       type: String,
       default: "General",
+    },
+    author: {
+      type: String,
+    },
+    tags: {
+      type: [String],
     },
     likes: {
       type: [String],
       default: [],
     },
-    comments: {
-      type: [commentSchema],
-      default: [],
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: null,
-    },
+    comments: [commentSchema],
   },
+
   {
-    timestamps: true, 
+    timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );
 
-module.exports = mongoose.model("BlogPost", blogPostSchema);
+const blogModel = model("Blog", blogSchema);
+
+const commentModel = model("comment", commentSchema);
+
+module.exports = { commentModel, blogModel };
